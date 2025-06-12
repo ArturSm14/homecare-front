@@ -1,0 +1,1 @@
+export type AttendanceStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
