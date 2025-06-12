@@ -1,9 +1,11 @@
-import { Button } from './components/ui/button'
+import { Header } from "./components/header"
 
 function App() {
 
   return (
-      <Button>Click aqui</Button>
+      <div className="m-10">
+        <Header />
+      </div>
   )
 }
 
