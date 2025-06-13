@@ -6,19 +6,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTablePagination } from "../data-table-pagination"
+import { LoaderCircle } from "lucide-react"
+import type { DataTableProps } from "@/types/datatable/data-table-props"
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  onSuccess?: () => Promise<void>
-}
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onSuccess,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -51,7 +49,16 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                <div className="flex items-center justify-center">
+                  <LoaderCircle className="animate-spin mr-2" />
+                  <span>Carregando...</span>
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}

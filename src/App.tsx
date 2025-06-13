@@ -71,7 +71,7 @@ export default function App() {
         </div>
 
         <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-          <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-2">
+          <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-2 mt-6">
             <div className="flex flex-col gap-2">
               <CardTitle className="flex items-center gap-2">
                 <Calendar size={20} className="text-blue-600"/>
@@ -92,7 +92,7 @@ export default function App() {
             </Button>
           </CardHeader>
           <CardContent>
-            <DataTable columns={columns} data={attendanceData} onSuccess={handleSuccess} />
+            <DataTable columns={columns} data={attendanceData} onSuccess={handleSuccess} isLoading={isLoading} />
           </CardContent>
         </Card>
 
