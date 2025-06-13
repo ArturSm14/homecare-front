@@ -8,4 +8,5 @@ export interface FormAttendanceProps {
     onOpenChange: (isModalOpen: boolean) => void
     editMode?: boolean
     attendance?: Attendance
+    onSuccess?: () => Promise<void>
 }

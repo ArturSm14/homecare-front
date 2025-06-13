@@ -12,16 +12,21 @@ import { DataTablePagination } from "../data-table-pagination"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onSuccess?: () => Promise<void>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onSuccess,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    meta: {
+      onSuccess,
+    },
   })
 
   return (
@@ -62,7 +67,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                Nenhum dado encontrado.
               </TableCell>
             </TableRow>
           )}

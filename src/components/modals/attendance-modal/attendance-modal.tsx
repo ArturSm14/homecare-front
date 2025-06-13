@@ -14,6 +14,7 @@ export function AttedanceModal({
   onOpenChange,
   editMode,
   attendance,
+  onSuccess,
 }: AttendanceModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,6 +35,7 @@ export function AttedanceModal({
           onOpenChange={onOpenChange} 
           editMode={editMode} 
           attendance={attendance}
+          onSuccess={onSuccess}
         />
       </DialogContent>
     </Dialog>

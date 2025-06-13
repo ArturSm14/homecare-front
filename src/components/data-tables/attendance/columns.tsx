@@ -118,8 +118,9 @@ export const columns: ColumnDef<Attendance>[] = [
   {
     accessorKey: "actions",
     header: "Ações",
-    cell: ({ row }) => {
-      return <DataTableActionButtons row={row} />
+    cell: ({ row, table }) => {
+      const onSuccess = (table.options.meta as { onSuccess?: () => void })?.onSuccess;
+      return <DataTableActionButtons row={row} onSuccess={onSuccess ? async () => await onSuccess() : undefined} />
     }
   }
 ]

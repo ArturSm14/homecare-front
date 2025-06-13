@@ -27,11 +27,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { statusOptions } from "@/utils/const/statusOptions";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { api } from "@/api";
+import { toast } from "sonner";
 
 export function FormAttendance({
   onOpenChange,
   editMode,
   attendance,
+  onSuccess,
 }: FormAttendanceProps) {
   const [loading, setLoading] = useState(false);
 
@@ -58,12 +61,46 @@ export function FormAttendance({
     }
   }, [editMode, attendance, form]);
 
-  const onSubmit = (data: AttendanceFormSchema) => {
+  const onSubmit = async (data: AttendanceFormSchema) => {
     try {
       setLoading(true);
-      console.log(data);
+      if(editMode && attendance) {
+        const res = await api.attendance.update(attendance.id.toString(), data);
+
+        if(!res) {
+          setLoading(false);
+          toast.error("Erro ao atualizar atendimento. Tente novamente.");
+          return;
+        }
+        toast.success("Atendimento atualizado com sucesso!");
+        
+        if (onSuccess) {
+          await onSuccess();
+        }
+        
+        onOpenChange(false);
+      } else {
+        const res = await api.attendance.create(data);
+        
+        if(!res) {
+          setLoading(false);
+          toast.error("Erro ao criar atendimento. Tente novamente.");
+          return;
+        }
+        toast.success("Atendimento criado com sucesso!");
+        
+        if (onSuccess) {
+          await onSuccess();
+        }
+        
+        onOpenChange(false);
+      }
+      
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao salvar atendimento:", error);
+      toast.error("Erro ao salvar atendimento. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -234,7 +271,9 @@ export function FormAttendance({
                 <span className="ml-2">Salvando...</span>
               </>
             ) : (
-              "Salvar Atendimento"
+                <span>
+                    {editMode? "Editar Atendimento" : "Criar Atendimento"}
+                </span>
             )}
           </Button>
         </div>

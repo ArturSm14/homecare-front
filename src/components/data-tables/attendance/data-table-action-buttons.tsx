@@ -2,17 +2,29 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 import { AttedanceModal } from "@/components/modals/attendance-modal";
-import type { Attendance } from "@/types/attendance";
+import type { DataTableActionButtonsProps } from "@/types/dataTableActionButtonProps";
+import { api } from "@/api";
+import { toast } from "sonner";
 
-interface DataTableActionButtonsProps {
-  row: {
-    original: Attendance;
-  };
-}
 
-export function DataTableActionButtons({ row }: DataTableActionButtonsProps) {
+export function DataTableActionButtons({ row, onSuccess }: DataTableActionButtonsProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const attendance = row.original;
+
+  const handleDelete = async () => {
+    try {
+      const res = await api.attendance.delete(attendance.id.toString());
+      console.log(res);
+      if(!res.status) {
+        toast.error("Erro ao excluir atendimento. Tente novamente.");
+        return;
+      }
+      toast.success("Atendimento excluído com sucesso!");
+      onSuccess?.();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   
   return (
     <div className="flex items-center gap-2">
@@ -25,7 +37,8 @@ export function DataTableActionButtons({ row }: DataTableActionButtonsProps) {
         Editar
       </Button>
       <Button 
-        variant="destructive" 
+        variant="destructive"
+        onClick={handleDelete} 
         className="h-8 flex items-center gap-2 cursor-pointer"
       >
         <Trash2 />
@@ -38,6 +51,7 @@ export function DataTableActionButtons({ row }: DataTableActionButtonsProps) {
           onOpenChange={setIsEditModalOpen}
           editMode={true}
           attendance={attendance}
+          onSuccess={onSuccess}
         />
       )}
     </div>
