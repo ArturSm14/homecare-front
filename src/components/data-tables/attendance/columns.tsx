@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge"
 import type { Attendance } from "@/types/attendance"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Calendar, MapPin, SquarePen, Trash2 } from "lucide-react"
+import { Calendar, MapPin } from "lucide-react"
 import { callTypes, statusLabels } from "./data/data"
 import type { AttendanceStatus } from "@/types/attendanceStatus"
 import { cn } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
+import { DataTableActionButtons } from "./data-table-action-buttons"
 
 export const columns: ColumnDef<Attendance>[] = [
   {
@@ -119,18 +119,7 @@ export const columns: ColumnDef<Attendance>[] = [
     accessorKey: "actions",
     header: "Ações",
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" className="h-8 flex items-center gap-2 cursor-pointer">
-            <SquarePen />
-            Editar
-          </Button>
-          <Button variant="destructive" className="h-8 flex items-center gap-2 cursor-pointer">
-            <Trash2 />
-            Excluir
-          </Button>
-        </div>
-      )
+      return <DataTableActionButtons row={row} />
     }
   }
 ]

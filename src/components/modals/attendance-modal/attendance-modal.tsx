@@ -13,6 +13,7 @@ export function AttedanceModal({
   open,
   onOpenChange,
   editMode,
+  attendance,
 }: AttendanceModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -22,12 +23,18 @@ export function AttedanceModal({
             <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
               <User className="w-4 h-4 text-white" />
             </div>
-            Novo Atendimento
+            {editMode ? "Editar Atendimento" : "Novo Atendimento"}
           </DialogTitle>
-          <DialogDescription>Cadastre um novo atendimento</DialogDescription>
+          <DialogDescription>
+            {editMode ? "Edite os dados do atendimento" : "Cadastre um novo atendimento"}
+          </DialogDescription>
         </DialogHeader>
 
-        <FormAttendance onOpenChange={onOpenChange} editMode={editMode}/>
+        <FormAttendance 
+          onOpenChange={onOpenChange} 
+          editMode={editMode} 
+          attendance={attendance}
+        />
       </DialogContent>
     </Dialog>
   );
