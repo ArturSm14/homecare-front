@@ -3,9 +3,8 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
 /**
- * Realiza uma requisição GET
- * @param endpoint - Endpoint da API
- * @param params - Parâmetros de consulta (opcional)
+ * @param endpoint
+ * @param params 
  */
 export const get = async <T>(endpoint: string, params?: Record<string, string>): Promise<T> => {
   const url = buildUrl(endpoint, params);
@@ -25,9 +24,8 @@ export const get = async <T>(endpoint: string, params?: Record<string, string>):
 };
 
 /**
- * Realiza uma requisição POST
- * @param endpoint - Endpoint da API
- * @param data - Dados a serem enviados
+ * @param endpoint
+ * @param data 
  */
 export const post = async <T, D extends Record<string, unknown>>(endpoint: string, data: D): Promise<T> => {
   const url = buildUrl(endpoint);
@@ -47,9 +45,8 @@ export const post = async <T, D extends Record<string, unknown>>(endpoint: strin
 };
 
 /**
- * Realiza uma requisição PUT
- * @param endpoint - Endpoint da API
- * @param data - Dados a serem enviados
+ * @param endpoint 
+ * @param data
  */
 export const put = async <T, D extends Record<string, unknown>>(endpoint: string, data: D): Promise<T> => {
   const url = buildUrl(endpoint);
@@ -69,8 +66,7 @@ export const put = async <T, D extends Record<string, unknown>>(endpoint: string
 };
 
 /**
- * Realiza uma requisição DELETE
- * @param endpoint - Endpoint da API
+ * @param endpoint
  */
 export const del = async <T>(endpoint: string): Promise<T> => {
   const url = buildUrl(endpoint);

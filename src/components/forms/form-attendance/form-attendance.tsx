@@ -29,12 +29,14 @@ import { statusOptions } from "@/utils/const/statusOptions";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { api } from "@/api";
 import { toast } from "sonner";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 
 export function FormAttendance({
   onOpenChange,
   editMode,
   attendance,
   onSuccess,
+  onSuccessModalOpen
 }: FormAttendanceProps) {
   const [loading, setLoading] = useState(false);
 
@@ -66,39 +68,71 @@ export function FormAttendance({
       setLoading(true);
       if(editMode && attendance) {
         const res = await api.attendance.update(attendance.id.toString(), data);
+        console.log("Resposta da API (update):", res);
 
         if(!res) {
           setLoading(false);
           toast.error("Erro ao atualizar atendimento. Tente novamente.");
           return;
         }
+        
         toast.success("Atendimento atualizado com sucesso!");
         
-        if (onSuccess) {
-          await onSuccess();
-        }
-        
         onOpenChange(false);
+        
+        if (onSuccess) {
+          try {
+            await onSuccess();
+          } catch (refreshError) {
+            console.error("Erro ao atualizar a lista após editar atendimento:", refreshError);
+          }
+        }
       } else {
         const res = await api.attendance.create(data);
         
-        if(!res) {
+        if(!res || !res.status) {
           setLoading(false);
           toast.error("Erro ao criar atendimento. Tente novamente.");
           return;
         }
-        toast.success("Atendimento criado com sucesso!");
         
-        if (onSuccess) {
-          await onSuccess();
-        }
+        const protocol = res.response?.number_protocol || "N/A";
+        console.log("Protocolo extraído:", protocol);
+        
+        toast.success(res.message || "Atendimento criado com sucesso!");
         
         onOpenChange(false);
+        
+        if (onSuccess) {
+          try {
+            await onSuccess();
+          } catch (refreshError) {
+            console.error("Erro ao atualizar a lista após criar atendimento:", refreshError);
+          }
+        }
+        
+        if (onSuccessModalOpen) {
+          onSuccessModalOpen(true, protocol);
+        }
       }
       
     } catch (error) {
       console.error("Erro ao salvar atendimento:", error);
-      toast.error("Erro ao salvar atendimento. Tente novamente.");
+      
+      // Verificar se o erro é relacionado à resposta da API
+      if (error instanceof Error) {
+        console.error("Detalhes do erro:", error.message);
+      }
+      
+      // Mensagem de erro mais específica baseada no tipo de operação
+      if (editMode) {
+        toast.error("Erro ao atualizar atendimento. Verifique os dados e tente novamente.");
+      } else {
+        toast.error("Erro ao criar atendimento. Verifique os dados e tente novamente.");
+      }
+      
+      // Garantir que o modal permaneça aberto em caso de erro para que o usuário possa corrigir os dados
+      // sem perder o que já preencheu
     } finally {
       setLoading(false);
     }
@@ -134,7 +168,14 @@ export function FormAttendance({
                 Telefone
               </FormLabel>
               <FormControl>
-                <Input placeholder="Telefone" {...field} />
+                <Input 
+                    placeholder="Telefone" 
+                    {...field}
+                    onChange={(e) => {
+                        const formatted = formatPhoneNumber(e.target.value);
+                        field.onChange(formatted);
+                    }} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
