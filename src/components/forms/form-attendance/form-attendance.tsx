@@ -119,20 +119,16 @@ export function FormAttendance({
     } catch (error) {
       console.error("Erro ao salvar atendimento:", error);
       
-      // Verificar se o erro é relacionado à resposta da API
       if (error instanceof Error) {
         console.error("Detalhes do erro:", error.message);
       }
       
-      // Mensagem de erro mais específica baseada no tipo de operação
       if (editMode) {
         toast.error("Erro ao atualizar atendimento. Verifique os dados e tente novamente.");
       } else {
         toast.error("Erro ao criar atendimento. Verifique os dados e tente novamente.");
       }
       
-      // Garantir que o modal permaneça aberto em caso de erro para que o usuário possa corrigir os dados
-      // sem perder o que já preencheu
     } finally {
       setLoading(false);
     }
@@ -253,9 +249,9 @@ export function FormAttendance({
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput placeholder="Search language..." />
+                      <CommandInput placeholder="Pesquise o status..." />
                       <CommandList>
-                        <CommandEmpty>No language found.</CommandEmpty>
+                        <CommandEmpty>Nenhum Status encontrado.</CommandEmpty>
                         <CommandGroup>
                           {statusOptions.map((statusOption) => (
                             <CommandItem
