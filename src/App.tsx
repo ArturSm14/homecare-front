@@ -5,6 +5,8 @@ import { Header } from "./components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
 import type { Attendance } from "./types/attendance";
 import { Button } from "./components/ui/button";
+import { AttedanceModal } from "./components/modals/attendance-modal";
+import { useState } from "react";
 
 export const attendanceData: Attendance[] = [
   {
@@ -43,10 +45,11 @@ export const attendanceData: Attendance[] = [
 ];
 
 export default function App() {
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   return (
       <div className="m-10 flex flex-col gap-10">
-        <Header />
+        <Header setIsModalOpen={setIsModalOpen} />
 
         <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
           <CardHeader className="flex justify-between gap-2">
@@ -59,12 +62,23 @@ export default function App() {
                 Lista completa dos atendimentos
               </CardDescription>
             </div>
-            <Button className="cursor-pointer hover:bg-gray-200" variant="outline">Atualizar</Button>
+            <Button 
+              className="cursor-pointer hover:bg-gray-200" 
+              variant="outline"
+              
+            >
+                Atualizar
+            </Button>
           </CardHeader>
           <CardContent>
             <DataTable columns={columns} data={attendanceData} />
           </CardContent>
         </Card>
+
+        <AttedanceModal 
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+        />
       </div>
   )
 }
