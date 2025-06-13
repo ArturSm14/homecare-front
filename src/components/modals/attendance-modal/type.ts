@@ -5,4 +5,5 @@ export type AttendanceModalProps = {
   onOpenChange: (open: boolean) => void;
   editMode?: boolean;
   attendance?: Attendance;
+  onSuccess?: () => Promise<void>;
 }
