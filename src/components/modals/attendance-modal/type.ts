@@ -6,4 +6,5 @@ export type AttendanceModalProps = {
   editMode?: boolean;
   attendance?: Attendance;
   onSuccess?: () => Promise<void>;
+  onSuccessModalOpen?: (isOpen: boolean, protocol?: string) => void;
 }

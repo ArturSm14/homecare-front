@@ -8,12 +8,15 @@ import { Button } from "./components/ui/button";
 import { AttedanceModal } from "./components/modals/attendance-modal";
 import { useState, useEffect } from "react";
 import { api } from "./api";
+import { SuccessModal } from "./components/modals/success-modal";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [protocol, setProtocol] = useState<string | null>(null);
   
   const fetchAttendanceData = async () => {
     setIsLoading(true);
@@ -69,6 +72,18 @@ export default function App() {
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
           onSuccess={fetchAttendanceData}
+          onSuccessModalOpen={(isOpen, protocol) => {
+            if (protocol) {
+              setProtocol(protocol);
+            }
+            setIsSuccessModalOpen(isOpen);
+          }}
+        />
+
+        <SuccessModal 
+          open={isSuccessModalOpen}
+          onOpenChange={setIsSuccessModalOpen}
+          protocol={protocol}
         />
       </div>
   )
