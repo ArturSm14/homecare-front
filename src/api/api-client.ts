@@ -84,6 +84,22 @@ export const del = async <T>(endpoint: string): Promise<T> => {
   return response.json();
 };
 
+export const getStatus = async <T>(endpoint: string): Promise<T> => {
+  const url = buildUrl(endpoint);
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erro na requisição: ${response.status}`);
+  }
+  
+  return response.json();
+}
+
 
 const buildUrl = (endpoint: string, params?: Record<string, string>): string => {
   const url = new URL(`${API_URL}${endpoint}`);

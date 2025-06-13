@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export function Header({ setIsModalOpen } : HeaderProps ) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">

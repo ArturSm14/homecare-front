@@ -3,6 +3,7 @@ import type { AttendanceFormSchema } from '../components/forms/form-attendance/t
 import type { ApiResponse } from '../types/apiResponse';
 import type { SingleApiResponse } from '../types/singleApiResponse';
 import { get, post, put, del } from './api-client';
+import type { StatusApiResponse } from '@/components/cards/status-card-grid/types';
 
 const ENDPOINT = 'attendances';
 
@@ -45,5 +46,15 @@ export const attendanceService = {
    */
   delete: async (id: string): Promise<{ status: boolean; response: null; message: string }> => {
     return del<{ status: boolean; response: null; message: string }>(`${ENDPOINT}/${id}`);
+  },
+
+  getStatus: async () : Promise<StatusApiResponse> => {
+    const url = ENDPOINT;
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}${url}/count-by-status`);
+    if (!response.ok) {
+      throw new Error(`Erro na requisição: ${response.status}`);
+    }
+    return response.json();
   }
 };
