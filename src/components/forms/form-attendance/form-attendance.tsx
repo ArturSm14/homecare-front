@@ -68,7 +68,6 @@ export function FormAttendance({
       setLoading(true);
       if(editMode && attendance) {
         const res = await api.attendance.update(attendance.id.toString(), data);
-        console.log("Resposta da API (update):", res);
 
         if(!res) {
           setLoading(false);
@@ -97,7 +96,6 @@ export function FormAttendance({
         }
         
         const protocol = res.response?.number_protocol || "N/A";
-        console.log("Protocolo extraído:", protocol);
         
         toast.success(res.message || "Atendimento criado com sucesso!");
         
