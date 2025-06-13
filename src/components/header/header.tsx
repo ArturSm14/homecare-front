@@ -1,7 +1,11 @@
 import { FileSpreadsheet, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 
-export function Header() {
+interface HeaderProps {
+  setIsModalOpen: (isModalOpen: boolean) => void
+}
+
+export function Header({ setIsModalOpen } : HeaderProps ) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-col gap-2">
@@ -14,7 +18,10 @@ export function Header() {
         <span className="text-gray-500">Gerencie seus atendimentos domiciliares</span>
       </div>
       
-      <Button className="bg-blue-600 hover:bg-blue-400 flex items-center gap-4 cursor-pointer">
+      <Button 
+        className="bg-blue-600 hover:bg-blue-400 flex items-center gap-4 cursor-pointer"
+        onClick={() => setIsModalOpen(true)}
+      >
         <Plus />
         <span>Novo Atendimento</span>
       </Button>
