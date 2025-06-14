@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from "react";
 import { Calendar } from "lucide-react";
 import { DataTable } from "./components/data-tables/attendance";
 import { columns } from "./components/data-tables/attendance/columns";
@@ -6,53 +7,67 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./com
 import type { Attendance } from "./types/attendance";
 import { Button } from "./components/ui/button";
 import { AttedanceModal } from "./components/modals/attendance-modal";
-import { useState, useEffect } from "react";
 import { api } from "./api";
 import { SuccessModal } from "./components/modals/success-modal";
 import { StatusCardGrid } from "./components/cards/status-card-grid";
 import type { StatusApiResponse } from "./components/cards/status-card-grid/types";
+import type { ApiResponse } from "./types/apiResponse";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
+  const [paginationMeta, setPaginationMeta] = useState<ApiResponse<Attendance>["meta"]>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(15);
   const [statusData, setStatusData] = useState<StatusApiResponse | undefined>()
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [protocol, setProtocol] = useState<string | null>(null);
   const [isStatusLoading, setIsStatusLoading] = useState(true)
   
-  const fetchAttendanceData = async () => {
+  const fetchAttendanceData = useCallback(async (page = currentPage, itemsPerPage = perPage) => {
     setIsLoading(true);
     setError(null);
-    
+  
     try {
-      const response = await api.attendance.getAll();
+      const response = await api.attendance.getAll(page, itemsPerPage);
       setAttendanceData(response.data);
+      setPaginationMeta(response.meta);
+      setCurrentPage(response.meta.current_page);
+      setPerPage(response.meta.per_page);
     } catch (err) {
       console.error("Erro ao buscar dados de atendimento:", err);
       setError("Não foi possível carregar os dados.");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fetchStatusData = async () => {
+  }, [currentPage, perPage]);
+  
+  const fetchStatusData = useCallback(async () => {
     try {
-      setIsStatusLoading(true)
+      setIsStatusLoading(true);
       const response = await api.attendance.getStatus();
-      setStatusData(response)
+      setStatusData(response);
     } catch (error) {
-      console.error("Erro ao carregar dados de status:", error)
+      console.error("Erro ao carregar dados de status:", error);
     } finally {
-      setIsStatusLoading(false)
+      setIsStatusLoading(false);
     }
-  }
+  }, []);
   
   useEffect(() => {
     fetchAttendanceData();
     fetchStatusData();
-  }, []);
+  }, [fetchAttendanceData, fetchStatusData]);
+
+  const handlePageChange = async (page: number) => {
+    await fetchAttendanceData(page, perPage);
+  };
+
+  const handlePerPageChange = async (newPerPage: number) => {
+    await fetchAttendanceData(1, newPerPage);
+  };
 
   const handleSuccess = async () => {
     await fetchAttendanceData();
@@ -92,7 +107,15 @@ export default function App() {
             </Button>
           </CardHeader>
           <CardContent>
-            <DataTable columns={columns} data={attendanceData} onSuccess={handleSuccess} isLoading={isLoading} />
+            <DataTable 
+              columns={columns} 
+              data={attendanceData} 
+              onSuccess={handleSuccess} 
+              isLoading={isLoading} 
+              pagination={paginationMeta}
+              onPageChange={handlePageChange}
+              onPerPageChange={handlePerPageChange}
+            />
           </CardContent>
         </Card>
 
