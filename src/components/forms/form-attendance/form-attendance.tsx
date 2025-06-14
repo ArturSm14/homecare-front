@@ -39,6 +39,9 @@ export function FormAttendance({
   onSuccessModalOpen
 }: FormAttendanceProps) {
   const [loading, setLoading] = useState(false);
+  const [disabledCombobox, setDisabledCombobox] = useState(false);
+
+  console.log(attendance);
 
   const form = useForm<AttendanceFormSchema>({
     resolver: zodResolver(attendanceFormSchema),
@@ -60,6 +63,11 @@ export function FormAttendance({
         symptoms: attendance.symptoms,
         status: attendance.status,
       });
+
+      if (attendance.status === "cancelled") {
+        setDisabledCombobox(true);
+      }
+
     }
   }, [editMode, attendance, form]);
 
@@ -230,6 +238,7 @@ export function FormAttendance({
                       <Button
                         variant="outline"
                         role="combobox"
+                        disabled={disabledCombobox}
                         className={cn(
                           "w-full justify-between",
                           !field.value && "text-muted-foreground"
@@ -297,8 +306,9 @@ export function FormAttendance({
 
           <Button
             type="submit"
+            
             className="bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-            disabled={loading}
+            disabled={loading || disabledCombobox}
           >
             {loading ? (
               <>

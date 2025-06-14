@@ -15,7 +15,7 @@ export function Header({ setIsModalOpen } : HeaderProps ) {
           </div>
           <h1 className="text-3xl font-bold">HomeCare</h1>
         </div>
-        <span className="text-gray-500">Gerencie seus atendimentos domiciliares</span>
+        <span className="text-gray-500">Gerencie seus atendimentos</span>
       </div>
       
       <Button 
