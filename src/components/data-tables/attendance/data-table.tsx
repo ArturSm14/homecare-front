@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { DataTablePagination } from "../data-table-pagination"
+import { DataTablePagination } from "../data-table-pagination/index"
 import { LoaderCircle } from "lucide-react"
 import type { DataTableProps } from "@/types/datatable/data-table-props"
 
@@ -17,6 +17,9 @@ export function DataTable<TData, TValue>({
   data,
   onSuccess,
   isLoading = false,
+  pagination,
+  onPageChange,
+  onPerPageChange,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -28,7 +31,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border mb-10">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -80,7 +83,12 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <DataTablePagination table={table} />
+      <DataTablePagination 
+        table={table} 
+        pagination={pagination} 
+        onPageChange={onPageChange} 
+        onPerPageChange={onPerPageChange} 
+      />
     </div>
   )
 }

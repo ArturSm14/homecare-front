@@ -8,8 +8,8 @@ import type { StatusApiResponse } from '@/components/cards/status-card-grid/type
 const ENDPOINT = 'attendances';
 
 export const attendanceService = {
-  getAll: async (): Promise<ApiResponse<Attendance>> => {
-    const url = ENDPOINT;
+  getAll: async (page: number = 1, perPage: number = 15): Promise<ApiResponse<Attendance>> => {
+    const url = `${ENDPOINT}?page=${page}&per_page=${perPage}`;
     const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
     
     if (!response.ok) {
@@ -49,12 +49,6 @@ export const attendanceService = {
   },
 
   getStatus: async () : Promise<StatusApiResponse> => {
-    const url = ENDPOINT;
-
-    const response = await fetch(`${import.meta.env.VITE_API_URL}${url}/count-by-status`);
-    if (!response.ok) {
-      throw new Error(`Erro na requisição: ${response.status}`);
-    }
-    return response.json();
+    return get<StatusApiResponse>(`${ENDPOINT}/count-by-status`);
   }
 };
