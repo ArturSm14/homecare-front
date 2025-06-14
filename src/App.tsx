@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from "react";
 import { Calendar } from "lucide-react";
 import { DataTable } from "./components/data-tables/attendance";
 import { columns } from "./components/data-tables/attendance/columns";
@@ -6,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./com
 import type { Attendance } from "./types/attendance";
 import { Button } from "./components/ui/button";
 import { AttedanceModal } from "./components/modals/attendance-modal";
-import { useState, useEffect } from "react";
 import { api } from "./api";
 import { SuccessModal } from "./components/modals/success-modal";
 import { StatusCardGrid } from "./components/cards/status-card-grid";
@@ -26,10 +26,10 @@ export default function App() {
   const [protocol, setProtocol] = useState<string | null>(null);
   const [isStatusLoading, setIsStatusLoading] = useState(true)
   
-  const fetchAttendanceData = async (page: number = currentPage, itemsPerPage: number = perPage) => {
+  const fetchAttendanceData = useCallback(async (page = currentPage, itemsPerPage = perPage) => {
     setIsLoading(true);
     setError(null);
-    
+  
     try {
       const response = await api.attendance.getAll(page, itemsPerPage);
       setAttendanceData(response.data);
@@ -42,24 +42,24 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fetchStatusData = async () => {
+  }, [currentPage, perPage]);
+  
+  const fetchStatusData = useCallback(async () => {
     try {
-      setIsStatusLoading(true)
+      setIsStatusLoading(true);
       const response = await api.attendance.getStatus();
-      setStatusData(response)
+      setStatusData(response);
     } catch (error) {
-      console.error("Erro ao carregar dados de status:", error)
+      console.error("Erro ao carregar dados de status:", error);
     } finally {
-      setIsStatusLoading(false)
+      setIsStatusLoading(false);
     }
-  }
+  }, []);
   
   useEffect(() => {
     fetchAttendanceData();
     fetchStatusData();
-  }, []);
+  }, [fetchAttendanceData, fetchStatusData]);
 
   const handlePageChange = async (page: number) => {
     await fetchAttendanceData(page, perPage);
